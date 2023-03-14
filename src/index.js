@@ -1,7 +1,9 @@
 const express = require('express');
-
 const app = express();
+
+const talkerRouter= require('./Routes/talkerRoute');
 app.use(express.json());
+app.use(talkerRouter);
 
 const HTTP_OK_STATUS = 200;
 const PORT = process.env.PORT || '3001';
