@@ -28,7 +28,24 @@ const writeNewTalker = async (newTalker) => {
   }
 };
 
+const updateTalker = async (id, newTalker) => {
+  try {
+    const oldTalkers = await readTalkerData();
+    const talkerIDexcluded = oldTalkers.filter((talker) => talker.id !== id);
+    const newTalkerWithID = { ...newTalker, id: Number(id) };
+    const allTalkers = [...talkerIDexcluded, newTalkerWithID];
+    await fs.writeFile(
+      path.join(__dirname, TALKER_FILE_PATH),
+      JSON.stringify(allTalkers, null, 2),
+    );
+    return newTalkerWithID;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 module.exports = {
   readTalkerData,
   writeNewTalker,
+  updateTalker,
 };
