@@ -7,6 +7,7 @@ const { nameValidator,
   talkValidator,
   watchedAtValidator,
   rateValidator } = require('../middlewares/talkerValidator');
+const { queryRateValidator } = require('../middlewares/queryValidator');
 const { readTalkerData,
     writeNewTalker,
     updateTalker,
@@ -14,11 +15,25 @@ const { readTalkerData,
 
 router.get('/talker/search',
   tokenValidator,
+  queryRateValidator,
   async (req, res) => {
-  const { q } = req.query;
+  const { q, rate } = req.query;
   const talkerData = await readTalkerData();
+  if (q && rate) {
+    const filteredTalkers = talkerData.filter((t) => t.name.includes(q)
+    && t.talk.rate === Number(rate));
+    return res.status(200).json(filteredTalkers);
+  }
+  if (q) {
   const filteredTalkers = talkerData.filter((t) => t.name.includes(q));
   return res.status(200).json(filteredTalkers);
+  }
+  if (rate) {
+    const filteredTalkers = talkerData.filter((t) => t.talk.rate === Number(rate));
+    return res.status(200).json(filteredTalkers);
+  }
+
+  return res.status(200).json(talkerData);
 });
 
 router.get('/talker', async (req, res) => {
