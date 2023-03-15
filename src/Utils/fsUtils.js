@@ -44,8 +44,18 @@ const updateTalker = async (id, newTalker) => {
   }
 };
 
+const deleteTalker = async (id) => {
+  const oldTalkers = await readTalkerData();
+  const talkerIDexcluded = oldTalkers.filter((talker) => talker.id !== Number(id));
+  await fs.writeFile(
+    path.join(__dirname, TALKER_FILE_PATH),
+    JSON.stringify(talkerIDexcluded, null, 2),
+  );
+};
+
 module.exports = {
   readTalkerData,
   writeNewTalker,
   updateTalker,
+  deleteTalker,
 };

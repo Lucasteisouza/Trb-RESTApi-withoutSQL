@@ -7,7 +7,10 @@ const { nameValidator,
   talkValidator,
   watchedAtValidator,
   rateValidator } = require('../middlewares/talkerValidator');
-const { readTalkerData, writeNewTalker, updateTalker } = require('../Utils/fsUtils');
+const { readTalkerData,
+    writeNewTalker,
+    updateTalker,
+    deleteTalker } = require('../Utils/fsUtils');
 
 router.get('/talker', async (req, res) => {
   const talkerData = await readTalkerData();
@@ -55,5 +58,16 @@ router.put('/talker/:id',
     const updatedTalker = await updateTalker(id, { name, age, talk });
     return res.status(200).json(updatedTalker);
   });
+
+router.delete('/talker/:id', tokenValidator, async (req, res) => {
+  const { id } = req.params;
+  const talkerData = await readTalkerData();
+  const wasFound = talkerData.find((t) => t.id === Number(id));
+  if (!wasFound) {
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
+  }
+  await deleteTalker(id);
+  return res.status(204).end();
+});
 
 module.exports = router;
