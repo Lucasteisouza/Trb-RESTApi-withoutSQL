@@ -12,6 +12,15 @@ const { readTalkerData,
     updateTalker,
     deleteTalker } = require('../Utils/fsUtils');
 
+router.get('/talker/search',
+  tokenValidator,
+  async (req, res) => {
+  const { q } = req.query;
+  const talkerData = await readTalkerData();
+  const filteredTalkers = talkerData.filter((t) => t.name.includes(q));
+  return res.status(200).json(filteredTalkers);
+});
+
 router.get('/talker', async (req, res) => {
   const talkerData = await readTalkerData();
   return res.status(200).json(talkerData);
